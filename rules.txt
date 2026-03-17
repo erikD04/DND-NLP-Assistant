@@ -1,0 +1,5 @@
+Attack Roll: When a character attempts to hit a target, they roll a 20-sided die and add modifiers. If the result equals or exceeds the target's armor class, the attack hits.
+
+Saving Throw: A saving throw represents an attempt to resist a spell, trap, or harmful effect.
+
+Initiative: Initiative determines the order of turns during combat.
