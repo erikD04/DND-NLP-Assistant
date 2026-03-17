@@ -12,9 +12,11 @@ D&D NLP Assistant:
 Ask a rule question (type 'exit' to quit)  
 
 > how do I determine turn order?
+
 Initiative: Initiative determines the order of turns during combat.
 
 > how do I resist a spell?
+ 
 Saving Throw: A saving throw represents an attempt to resist a spell, trap, or harmful effect.
 
 ## How It Works
