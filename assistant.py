@@ -1,49 +1,69 @@
-import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def load_rules():
-    rules = {}
+    titles = []
+    rules = []
+    documents = []
+
     with open("rules.txt", "r") as file:
         for line in file:
             if ":" in line:
-                title, description = line.split(":", 1)
-                rules[title.strip().lower()] = description.strip()
-    return rules
+                title, desc = line.split(":", 1)
+                title = title.strip()
+                desc = desc.strip()
+
+                titles.append(title)
+                rules.append(desc)
+                documents.append(f"{title} {desc}")
+
+    return titles, rules, documents
 
 
 def simplify_text(text):
-    # Very simple "NLP" simplification
-    text = re.sub(r"armor class", "defense rating", text)
-    text = re.sub(r"modifiers", "bonuses", text)
-    text = re.sub(r"initiative", "turn order", text)
-    return text
+    replacements = {
+        "armor class": "defense rating",
+        "modifiers": "bonuses",
+        "initiative": "turn order"
+    }
+
+    lowered = text
+    for old, new in replacements.items():
+        lowered = lowered.replace(old, new)
+
+    return lowered
 
 
-def ask_question(question, rules):
-    question = question.lower()
+def find_best_rule(question, titles, rules, documents):
+    all_text = documents + [question]
 
-    for rule in rules:
-        if rule in question:
-            explanation = rules[rule]
-            return simplify_text(explanation)
+    vectorizer = TfidfVectorizer(stop_words="english")
+    tfidf = vectorizer.fit_transform(all_text)
 
-    return "I couldn't find that rule yet. Try asking about attack, saving throw, or initiative."
+    question_vector = tfidf[-1]
+    rule_vectors = tfidf[:-1]
+
+    similarity = cosine_similarity(question_vector, rule_vectors)
+    best_index = similarity.argmax()
+
+    return titles[best_index], simplify_text(rules[best_index])
 
 
 def main():
-    print("D&D Rule Assistant")
-    print("Ask a question about a rule (type 'exit' to quit).\n")
+    titles, rules, documents = load_rules()
 
-    rules = load_rules()
+    print("D&D NLP Assistant")
+    print("Ask a rule question (type 'exit' to quit)\n")
 
     while True:
-        question = input("> ")
+        question = input("> ").strip()
 
         if question.lower() == "exit":
             break
 
-        answer = ask_question(question, rules)
-        print(answer)
-        print()
+        title, answer = find_best_rule(question, titles, rules, documents)
+        print(f"\n{title}: {answer}\n")
 
 
 if __name__ == "__main__":
