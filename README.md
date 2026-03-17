@@ -8,10 +8,10 @@ The goal of the project is to explore how NLP techniques can lower the barrier t
 
 ## Example
 
-D&D NLP Assistant
-Ask a rule question (type 'exit' to quit)
-> how do I determine turn order?
+D&D NLP Assistant:
+Ask a rule question (type 'exit' to quit)  
 
+> how do I determine turn order?
 Initiative: Initiative determines the order of turns during combat.
 
 > how do I resist a spell?
